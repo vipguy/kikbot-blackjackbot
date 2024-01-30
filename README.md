@@ -6,13 +6,6 @@ BLACKJACK:
  /bet <amount>. 
  Need help? Just type /intro.
 
-SLOTS
-  -Start slots game
-  /slots
-  
-
-
-
 LEADERBOARD: 
  -Set Nickname:
  /nickname <name>
