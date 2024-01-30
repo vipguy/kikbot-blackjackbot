@@ -459,7 +459,21 @@ class EchoBot(KikClientCallback):
 
         elif command == "/scramblehelp":
             self.show_word_scramble_help(group_jid)
-        
+        if message == "settings":
+            if chat_message.body.lower() and chat_message.from_jid in super or is_admin:
+                self.show_settings(chat_message.group_jid)
+            else:
+                self.client.send_chat_message(chat_message.group_jid, "You don't have permission to view settings.")
+
+        if message == "captcha":
+            if chat_message.body.lower() and chat_message.from_jid in super or is_admin:
+                current_status = self.get_captcha_status(chat_message.group_jid)
+                new_status = not current_status  # Toggle the status
+                self.set_captcha_status(chat_message.group_jid, new_status)
+                status_message = "Enabled" if new_status else "Disabled"
+                self.client.send_chat_message(chat_message.group_jid, f"Captcha is now {status_message}.")
+            else:
+                self.client.send_chat_message(chat_message.group_jid, "You don't have permission to change captcha settings.")
         # Assuming you want to display the leaderboard when requested
         if command == "/leaderboard":
             leaderboard_message = self.show_leaderboard(group_jid, user_jid)
@@ -1611,7 +1625,82 @@ class EchoBot(KikClientCallback):
         else:
             return f"The word rhymes with '{word[-3:]}'."
     
-    
+   def show_settings(self, group_jid):
+        captcha_status = "Enabled" if self.get_captcha_status(group_jid) else "Disabled"
+
+        settings_message = (
+        f'[Command Settings]\n'
+        f'Captcha: {captcha_status}\n'
+        # Add other commands and their status here
+        )
+
+        self.client.send_chat_message(group_jid, settings_message) 
+    def get_captcha_status(self, group_jid):
+        # Get captcha status for the group, default to True if not set
+        return self.captcha_status.get(group_jid, True) 
+    def set_captcha_status(self, group_jid, status):
+        # Set captcha status for the group
+        self.captcha_status[group_jid] = status
+    def remove_user(self, group_jid, user_jid):
+        # Remove the user from the group
+        self.client.remove_peer_from_group(group_jid, user_jid)
+        self.client.send_chat_message(group_jid, "Timeout or bot: User removed from the group.")
+    def check_math_answer(self, chat_message):
+        # Check if the user's answer is correct
+        user_answer = chat_message.body.strip()
+        correct_solution = self.pending_math_problems[chat_message.from_jid]["solution"]
+
+        if user_answer.isdigit() and int(user_answer) == correct_solution:
+            # Correct answer: Implement your desired logic here
+            # Cancel the timer since the user answered correctly
+            if chat_message.from_jid in self.timers:
+                self.timers[chat_message.from_jid].cancel()
+                del self.timers[chat_message.from_jid]
+            else:
+                # Incorrect answer: Remove the user
+                self.remove_user(chat_message.group_jid, chat_message.from_jid)
+    def handle_commands(self, command, command_parts, chat_message):
+        if command == "/save":
+            try:
+                _, word, response = chat_message.body.split(' ', 2)
+                result = self.database.save_word_response(chat_message.group_jid, word, response)
+                self.client.send_chat_message(chat_message.group_jid, result)
+            except ValueError:
+                self.client.send_chat_message(chat_message.group_jid, "Invalid format. Use /save [word] [response]")
+
+        elif command == "/listsave":
+            responses = self.database.get_word_responses(chat_message.group_jid)
+            response_text = "\n".join([f"{word}/{response}" for word, response in responses])
+            self.client.send_chat_message(chat_message.group_jid, response_text or "No saved word responses.")
+
+        elif command == "/deletesave":
+            if len(command_parts) > 1:
+                word_to_delete = command_parts[1]
+                result = self.database.delete_word_response(chat_message.group_jid, word_to_delete)
+                self.client.send_chat_message(chat_message.group_jid, result)
+            else:
+                self.client.send_chat_message(chat_message.group_jid, "Please specify a word to delete. Format: /deletesave [word]")
+    def _send_xmpp_element(self, message: XMPPElement):
+        """
+        Serializes and sends the given XMPP element to kik servers
+        :param xmpp_element: The XMPP element to send
+        :return: The UUID of the element that was sent
+        """
+        while not self.client.connected:
+            print("[!] Waiting for connection.")
+            time.sleep(0.1)
+        if type(message.serialize()) is list:
+            print("[!] Sending multi packet data.")
+            packets = message.serialize()
+            for p in packets:
+                self.client.loop.call_soon_threadsafe(self.client.connection.send_raw_data, p)
+            return message.message_id
+        else:
+            self.client.loop.call_soon_threadsafe(self.client.connection.send_raw_data, message.serialize())
+            return message.message_id
+    def check_usernames_uniqueness(self, usernames):
+        response = self._send_xmpp_element(sign_up.CheckUsernameUniquenessRequest(usernames[0]))
+        return response 
    
     def on_group_sysmsg_received(self, response: chatting.IncomingGroupSysmsg):
 
