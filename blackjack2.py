@@ -26,7 +26,7 @@ from chatbot_db import ChatbotDatabase
 from helper_funcs import add_admin, add_to_groupcount, compare_groupcounts, is_user_admin, remove_admin
 from kik_unofficial.datatypes.xmpp.roster import FetchRosterResponse, PeersInfoResponse
 from kik_unofficial.datatypes.xmpp.xiphias import UsersByAliasResponse, UsersResponse
-
+api_key = "Get YOUR OWN API KEY " #https://apilayer.com/
 username = {}
 
 response = {}
