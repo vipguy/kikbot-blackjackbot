@@ -66,7 +66,7 @@ def main():
     with open(args.creds, "r") as f:
         creds = json.load(f)
 
-    bot = EchoBot(creds)
+    bot = EchoBot(creds, database)
 
 def sanitize_filename(filename):
      # Replace or remove invalid characters
