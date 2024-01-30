@@ -184,7 +184,7 @@ class EchoBot(KikClientCallback):
     def get_group_jid_number(jid):
         return jid.split('@')[0][0:-2]
 
-    def send_heartbeat(self, group_jid='1100221456712_g@groups.kik.com'): #ADD A group_jid OR user_jid
+    def send_heartbeat(self, group_jid=''): #ADD A group_jid OR user_jid
         while True:
             try:
                 if group_jid:
