@@ -815,6 +815,9 @@ class KikClient:
         if '@' in username_or_jid:
             # this is already a JID.
             return username_or_jid
+        elif jid_utilities.is_group_jid(username_or_jid):
+            # this is already a group JID.
+            return username_or_jid
         username = username_or_jid
 
         # first search if we already have it
