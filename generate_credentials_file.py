@@ -10,8 +10,8 @@ from kik_unofficial.utilities.credential_utilities import random_device_id, rand
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', '--output', default='creds5.json', help='Name of output credentials file')
-    parser.add_argument('-u', '--username', required=True, help='Allybot1')
-    parser.add_argument('-p', '--password', help='Kik password (1234567@)')
+    parser.add_argument('-u', '--username', required=True, help='botname')
+    parser.add_argument('-p', '--password', help='Kik password (yourpassword)')
     parser.add_argument('-n', '--node', help='Kik node (optional)')
     args = parser.parse_args()
 
