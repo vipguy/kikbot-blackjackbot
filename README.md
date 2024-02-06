@@ -48,7 +48,7 @@ CUSTOM TRIGGERS:
 
 ANIMAL PICTURES:
  -Random animals:
- random fox, random monkey, monkey, cats, dogs, pandas, wolves, and ducks.
+ random fox, random monkey, monkey, cat, dog, panda, wolve, duck.
 
 WELCOME MESSAGE
  -On user join message:
