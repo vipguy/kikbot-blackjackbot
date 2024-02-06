@@ -135,7 +135,7 @@ class EchoBot(KikClientCallback):
         #YOUTUBE
         self.search_results = {}  # Dictionary to store search results
         self.awaiting_selection = {}  # Dictionary to track if awaiting selection
-        self.game_initiators = {}  # Dictionary to store game initiators
+        
         #Captcha
         self.pending_math_problems = {}  # Dictionary to store pending math problems
          # Initialize a dictionary to store captcha status for each group
