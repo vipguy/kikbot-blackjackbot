@@ -80,13 +80,11 @@ VIDEO_SLEEP_DELAY = 5
 from moviepy.editor import VideoFileClip
 from pytube import YouTube, Search
 import validators
-    # create the bot
 HEARTS = '♥'
 DIAMONDS = '♦'
 CLUBS = '♣'
 SPADES = '♠'
 
-    
 # Configure the logging as usual
 logging.basicConfig(
     level=logging.INFO,  # Set your desired log level
@@ -124,7 +122,6 @@ class EchoBot(KikClientCallback):
         
         self.custom_commands = {}
         # Initialize dictionaries 
-        self.hangman_games = {}  # Dictionary to track Hangman game state by group ID
         self.game_initiators = {}  # Dictionary to store game initiators
         self.words = []  # Words loaded from the JSON file
         self.rounds = 5  # Set the number of rounds
