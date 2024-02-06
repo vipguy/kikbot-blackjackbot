@@ -28,19 +28,14 @@ from kik_unofficial.datatypes.xmpp.roster import FetchRosterResponse, PeersInfoR
 from kik_unofficial.datatypes.xmpp.xiphias import UsersByAliasResponse, UsersResponse
 api_key = "Get YOUR OWN API KEY " #https://apilayer.com/
 username = {}
-
 response = {}
+users = {}
 import kik_unofficial.datatypes.xmpp.chatting as chatting
 from kik_unofficial.client import KikClient
 from kik_unofficial.callbacks import KikClientCallback
 from kik_unofficial.datatypes.xmpp.errors import SignUpError, LoginError
-
 from kik_unofficial.datatypes.xmpp.sign_up import RegisterResponse
 from kik_unofficial.datatypes.xmpp.login import LoginResponse, ConnectionFailedResponse, CaptchaElement, TempBanElement
-
-users = {}
-# Define Unicode symbols for card suits
-
 # Specify the path to your SQLite database file (replace 'your_database_file.sqlite3' with your actual path)
 db_path = 'blackjack_bot.db'
 # Specify a fixed table suffix that remains consistent across bot restarts
@@ -48,8 +43,6 @@ table_suffix = 'users'
 DEFAULT_BET_AMOUNT = 0
 # Create the Database instance with the provided database file path and table suffix
 database = BlackjackDatabase(db_path, table_suffix)
-users = {}
-
 card = {'rank': 'A', 'suit': 'Spades'}
 def main():
     # The credentials file where you store the bot's login information
@@ -129,9 +122,7 @@ class EchoBot(KikClientCallback):
         node = creds.get('node')
         self.client = KikClient(self, username, str(password), node, device_id=device_id, android_id=android_id)
         
-        
         self.custom_commands = {}
-        # Initialize dictionaries 
         # Initialize dictionaries 
         self.hangman_games = {}  # Dictionary to track Hangman game state by group ID
         self.game_initiators = {}  # Dictionary to store game initiators
@@ -155,21 +146,7 @@ class EchoBot(KikClientCallback):
         self.user_data = {}
         self.db = BlackjackDatabase(db_path, table_suffix)  # Ensure this is the correct class with the transfer_chips method
         self.database = ChatbotDatabase()
-        logging.basicConfig(
-        level=logging.ERROR,
-        format="%(asctime)s [%(levelname)s]: %(message)s")
-        self.client.wait_for_messages()
-    
-        
-    
-
-    
-    
        
-       
-    
-
-    
     def query_user(self, jid):
         if jid in self.users:
             return self.users[jid]
@@ -178,8 +155,6 @@ class EchoBot(KikClientCallback):
             while jid not in self.users:
                 pass  # You might want to add a timeout or a better waiting mechanism here
             return self.users[jid]
-
-
 
     def get_group_jid_number(jid):
         return jid.split('@')[0][0:-2]
@@ -228,10 +203,7 @@ class EchoBot(KikClientCallback):
         # Request the roster list
         self.client.request_roster(is_big=True)
 
-    
-    
-    
-    
+
     def on_login_ended(self, response: LoginResponse):
         print("Full name: {} {}".format(response.first_name, response.last_name))
     # This method is called when the bot receives a direct message (chat message)
@@ -370,7 +342,7 @@ class EchoBot(KikClientCallback):
 
         print(separator)
         print(group_message_header)
-        print(colored(f"From AJID: {chat_message.from_jid}" "yellow"))
+        print(colored(f"From AJID: {chat_message.from_jid}", "yellow"))
         print(colored(f"From group: {chat_message.group_jid}", "yellow"))
         print(colored(f"Says: {chat_message.body}", "yellow"))
 
@@ -550,16 +522,6 @@ class EchoBot(KikClientCallback):
                 self.stand(chat_message)
             elif "/double" in message_body:
                 self.double_down(chat_message)
-            
-        
-        
-        elif chat_message.body.lower().startswith("/profile"):
-            try:
-                _, requested_username = chat_message.body.split(maxsplit=1)
-                requested_user_jid = self.client.get_jid(requested_username)  # Convert username to JID
-                # Rest of your code to fetch the profile using requested_user_jid
-            except ValueError:
-                self.client.send_chat_message(group_jid, "Usage: /profile <username>")
         
         if chat_message.body.strip().lower() == "battery":
             battery = psutil.sensors_battery()
@@ -1058,14 +1020,13 @@ class EchoBot(KikClientCallback):
     def remove_user(self, group_jid, user_jid):
         # Remove the user from the group
         self.client.remove_peer_from_group(group_jid, user_jid)
-        self.client.send_chat_message(group_jid, "Timeout or bot: User removed from the group.")
+        self.client.send_chat_message(group_jid, "User removed.")
     def check_math_answer(self, chat_message):
         # Check if the user's answer is correct
         user_answer = chat_message.body.strip()
         correct_solution = self.pending_math_problems[chat_message.from_jid]["solution"]
 
         if user_answer.isdigit() and int(user_answer) == correct_solution:
-            # Correct answer: Implement your desired logic here
             # Cancel the timer since the user answered correctly
             if chat_message.from_jid in self.timers:
                 self.timers[chat_message.from_jid].cancel()
@@ -1082,7 +1043,7 @@ class EchoBot(KikClientCallback):
             login_error.solve_captcha_wizard(self.client)
 
 ####BLACKJACK
-    def show_leaderboard(self, group_jid, user_jid):
+    def show_leaderboard(self, group_jid, user_jid): # Needs improvement!
         leaderboard_data = database.get_user_leaderboard(group_jid)
 
         if not leaderboard_data:
@@ -1514,7 +1475,7 @@ class EchoBot(KikClientCallback):
 
         elif re.search(" has joined the chat$", str(response.status)) or re.search(" has joined the chat, invited by ", str(response.status)):
                 # Check if the user is a bot that needs to be removed
-            if response.status_jid in ["ki7i2vvrjyn2vatxrnwevw23gao26qytetof2l3zkugu4345z5lq_a@talk.kik.com",
+            if response.status_jid in ["ki7i2vvrjyn2vatxrnwevw23gao26qytetof2l3zkugu4345z5lq_a@talk.kik.com", # just bot jids
                     "fsxuovsiv6idrzrh7bzbp3yvlleu5ryi7zvp7hulld4v7znvw6fq_a@talk.kik.com",
                     "lpxs22qlsmljkc3g5c2kppndfl7luczdkoowoq46oynsclseqpkq_a@talk.kik.com",
                     "virm4x2appzzxfz6m4zx7v6ii3pncau7wfb3zdnbvu2fnzwsye7a_a@talk.kik.com",
