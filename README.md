@@ -31,10 +31,13 @@ WORD SCRAMBLE
  -Start a new game:
  /scramble
  -Guess the word:
- /sg [your_guess]
- RULES:
+ /sguess [your_guess]
+ -Guess help
+ /scramblehelp
+ Rules:
   - Try to unscramble the word.
   - You have 3 attempts to guess the word.
+  - Use hints wisely if needed.
 
 ADMION COMMANDS:
  -ban <username>
