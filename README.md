@@ -2,11 +2,12 @@
 kikbot
 The Blackjack Room! 
  I'm here to enhance your chat experience with various fun and useful features. Here's a quick rundown:
+Need help? Just Type: intro
 
 BLACKJACK: 
  -Start a game with: 
  /bet <amount>. 
- Need help? Just type /intro.
+ 
 
 LEADERBOARD: 
  -Set Nickname:
