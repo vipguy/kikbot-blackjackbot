@@ -635,7 +635,7 @@ class EchoBot(KikClientCallback):
         if chat_message.body.lower() == "/ttt":
             self.start_tic_tac_toe_game(chat_message)
         elif chat_message.body.lower() == "/thelp":
-            self.send_tic_tac_toe_help(chat_message.from_jid)
+            self.send_tic_tac_toe_help(chat_message.group_jid)
         elif chat_message.body.lower().startswith("/move "):
             self.make_tic_tac_toe_move(chat_message)
 
