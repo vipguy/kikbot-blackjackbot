@@ -1,0 +1,1 @@
+delete the text file keep the var folder
