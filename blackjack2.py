@@ -1,25 +1,13 @@
-import argparse
+
 from collections import defaultdict
 from io import BytesIO
-import itertools
-import json
-import logging
-import os
-import random
-import re
-import sqlite3
-import string
-import sys
-import threading
-import time
+import json, logging, os, random, re, threading, time, string, openai, requests, validators, argparse, sqlite3, psutil
+import tempfile
+from PIL import Image, ImageDraw, ImageFont
 from typing import Union
 from bs4 import BeautifulSoup
 from matplotlib import pyplot as plt
-import psutil
 from termcolor import colored
-import openai
-import requests
-import validators
 from PIL import Image, ImageDraw, ImageFont
 from blackjack_bot import BlackjackDatabase
 from chatbot_db import ChatbotDatabase
@@ -33,9 +21,10 @@ users = {}
 import kik_unofficial.datatypes.xmpp.chatting as chatting
 from kik_unofficial.client import KikClient
 from kik_unofficial.callbacks import KikClientCallback
-from kik_unofficial.datatypes.xmpp.errors import SignUpError, LoginError
+from kik_unofficial.datatypes.xmpp.errors import LoginError
 from kik_unofficial.datatypes.xmpp.sign_up import RegisterResponse
-from kik_unofficial.datatypes.xmpp.login import LoginResponse, ConnectionFailedResponse, CaptchaElement, TempBanElement
+from kik_unofficial.datatypes.xmpp.login import LoginResponse
+
 # Specify the path to your SQLite database file (replace 'your_database_file.sqlite3' with your actual path)
 db_path = 'blackjack_bot.db'
 # Specify a fixed table suffix that remains consistent across bot restarts
