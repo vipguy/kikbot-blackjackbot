@@ -11,6 +11,7 @@ from kik_unofficial.client import KikClient
 from kik_unofficial.callbacks import KikClientCallback
 import kik_unofficial.datatypes.xmpp.chatting as chatting
 from kik_unofficial.datatypes.xmpp.errors import LoginError
+from kik_unofficial.datatypes.xmpp.roster import FetchRosterResponse
 from helper_funcs import add_admin, is_user_admin, remove_admin
 super =
 logging.basicConfig(
@@ -197,7 +198,27 @@ class EchoBot(KikClientCallback):
 
                     # Send the math problem to the entire group
                     self.client.send_chat_message(response.group_jid, self.pending_math_problems[response.status_jid]["problem"])
-                
+    def on_roster_received(self, response: FetchRosterResponse):
+        groups = []
+        users = []
+        for peer in response.peers:
+            if "groups.kik.com" in peer.jid:
+                groups.append(peer.jid)
+            else:
+                users.append(peer.jid)
+
+        user_text = '\n'.join([f"User: {us}" for us in users])
+        group_text = '\n'.join([f"Group: {gr}" for gr in groups])
+        partner_count = len(response.peers)
+
+        roster_info = (
+            f"Roster Received\n"
+            f"Total Peers: {partner_count}\n"
+            f"Groups ({len(groups)}):\n{group_text}\n"
+            f"Users ({len(users)}):\n{user_text}"
+        )
+
+        print(roster_info)            
     # This method is called if a captcha is required to login
     def on_login_error(self, login_error: LoginError):
         if login_error.is_captcha():
