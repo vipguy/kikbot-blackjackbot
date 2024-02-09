@@ -297,7 +297,8 @@ def is_user_admin(user_id, group_id):
         return False
     else:
         return True
-
+# Call the function to create the table when your script/module initializes
+create_admins_table()
 def get_admins(group_id):
     with sqlite3.connect('db.sqlite3') as conn:
         curr = conn.cursor()
