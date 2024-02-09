@@ -61,10 +61,16 @@ class EchoBot(KikClientCallback):
     # This method is called when the bot receives a chat message in a group
     def on_group_message_received(self, chat_message: chatting.IncomingGroupChatMessage):
         separator = colored("--------------------------------------------------------", "cyan")
+        group_message_header = colored("[+ GROUP MESSAGE +]", "cyan")
         print(separator)
+        print(group_message_header)
         print(colored(f"From AJID: {chat_message.from_jid}", "yellow"))
         print(colored(f"From group: {chat_message.group_jid}", "yellow"))
-        print(colored(f"Says: {chat_message.body}", "yellow"))
+        print(colored(f"Says: {chat_message.body}", "red"))
+
+        # Check if the message is related to the Blackjack game
+        if chat_message.group_jid in self.game_state:
+            print(separator)
         print(separator)
         if chat_message.from_jid in self.pending_math_problems:
             # Display the math problem to the user
