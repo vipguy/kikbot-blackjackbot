@@ -1,3 +1,6 @@
+# this bot has captcha say captcha in group to turn it off and on (default on
+# add and empty group jid to use as the heartbeat to keep bot alive 
+# add bot jids to def on_group_status_received(self, response: chatting.IncomingGroupStatus): (can be done alot better lol )
 import argparse
 import json
 import logging
@@ -99,7 +102,7 @@ class EchoBot(KikClientCallback):
             is_superadmin = False
        # Convert message to lowercase for case-insensitive comparisons
         message = str(chat_message.body.lower())
-        #VIEW IF CAPTCHA IS SET TO ON 
+        #VIEW IF CAPTCHA IS SET TO ON(default ON) 
         if message == "settings":
             if chat_message.body.lower() and chat_message.from_jid in super or is_admin:
                 self.show_settings(chat_message.group_jid)
