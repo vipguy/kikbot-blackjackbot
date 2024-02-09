@@ -6,6 +6,7 @@ import threading
 import time
 import random
 import re
+from termcolor import colored
 from kik_unofficial.client import KikClient
 from kik_unofficial.callbacks import KikClientCallback
 import kik_unofficial.datatypes.xmpp.chatting as chatting
@@ -55,7 +56,12 @@ class EchoBot(KikClientCallback):
 
     # This method is called when the bot receives a chat message in a group
     def on_group_message_received(self, chat_message: chatting.IncomingGroupChatMessage):
-        self.client.send_chat_message(chat_message.group_jid, f'You said "{chat_message.body}"!')
+        separator = colored("--------------------------------------------------------", "cyan")
+        print(separator)
+        print(colored(f"From AJID: {chat_message.from_jid}", "yellow"))
+        print(colored(f"From group: {chat_message.group_jid}", "yellow"))
+        print(colored(f"Says: {chat_message.body}", "yellow"))
+        print(separator)
         if chat_message.from_jid in self.pending_math_problems:
             # Display the math problem to the user
             problem_message = self.pending_math_problems[chat_message.from_jid]["problem"]
