@@ -1,4 +1,0 @@
-device_id =  62030246678b7376a707ca3d11e87027
-android_id =  512d4ggb0c020de1
-
-example of id 
