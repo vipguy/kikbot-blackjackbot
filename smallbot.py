@@ -1,12 +1,17 @@
 import argparse
 import json
+import logging
 import os
+import threading
+import time
 from kik_unofficial.client import KikClient
 from kik_unofficial.callbacks import KikClientCallback
 import kik_unofficial.datatypes.xmpp.chatting as chatting
 from kik_unofficial.datatypes.xmpp.errors import LoginError
 
-
+logging.basicConfig(
+level=logging.ERROR,
+format="%(asctime)s [%(levelname)s]: %(message)s")
 # This bot class handles all the callbacks from the kik client
 class EchoBot(KikClientCallback):
     def __init__(self, creds: dict):
@@ -22,7 +27,20 @@ class EchoBot(KikClientCallback):
     # This method is called when the bot is fully logged in and setup
     def on_authenticated(self):
         self.client.request_roster()  # request list of chat partners
+    #keeps bot alive 
+    def send_heartbeat(self, group_jid='1100221456712_g@groups.kik.com'):
+        while True:
+            try:
+                if group_jid:
+                    self.client.send_chat_message(group_jid, " Status Check: Online Ping")
+                time.sleep(300)
+            except Exception as e:
+                logging.error(f"Heartbeat error: {e}")
 
+    def start_heartbeat(self):
+        heartbeat_thread = threading.Thread(target=self.send_heartbeat)
+        heartbeat_thread.daemon = True
+        heartbeat_thread.start()
     # This method is called when the bot receives a direct message (chat message)
     def on_chat_message_received(self, chat_message: chatting.IncomingChatMessage):
         self.client.send_chat_message(chat_message.from_jid, f'You said "{chat_message.body}"!')
