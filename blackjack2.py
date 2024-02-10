@@ -1701,26 +1701,6 @@ class EchoBot(KikClientCallback):
             except:
                 pass
 
-        def on_group_status_received(self, response: chatting.IncomingGroupStatus):
-        print(self.client.request_info_of_users(response.status_jid))
-        if re.search(" has promoted ", str(response.status)):
-            add_admin(response.group_jid, response.status_jid)
-
-        elif re.search(" has removed admin status from ", str(response.status)):
-            remove_admin(response.group_jid, response.status_jid)
-
-        elif re.search(" from this group$", str(response.status)) or re.search("^You have removed ", str(response.status)) or re.search(" has banned ", str(response.status)):
-            try:
-                remove_admin(response.group_jid, response.status_jid)
-            except:
-                pass
-
-        elif re.search(" has left the chat$", str(response.status)):
-            try:
-                remove_admin(response.group_jid, response.status_jid)
-            except:
-                pass
-
         elif re.search(" has joined the chat$", str(response.status)) or re.search(" has joined the chat, invited by ", str(response.status)):
                 # Check if the user is a bot that needs to be removed
             if response.status_jid in ["ki7i2vvrjyn2vatxrnwevw23gao26qytetof2l3zkugu4345z5lq_a@talk.kik.com",
