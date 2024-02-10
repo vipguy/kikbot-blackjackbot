@@ -102,15 +102,17 @@ class BlackjackDatabase:
             try:
                 with self.create_connection() as conn:
                     cursor = conn.cursor()
-                 # Fetching the scramble score along with other user details
+                    # Fetching the scramble score along with other user details
                     cursor.execute(f"SELECT jid, nickname, chips, scramble_score FROM {table_name} WHERE group_jid=?", (group_jid,))
                     leaderboard_data = cursor.fetchall()
-                    # Sorting the leaderboard data based on your preference
-                    leaderboard_data.sort(key=lambda x: (x[2], x[3]), reverse=True)  # Example: Sorting by chips and then by scramble score
-                    return leaderboard_data
+                    # Filter out entries with default nickname values
+                    filtered_leaderboard = [(jid, nickname, chips, scramble_score) for jid, nickname, chips, scramble_score in leaderboard_data if nickname != '1000000']
+                    # Sorting the filtered leaderboard data based on your preference
+                    filtered_leaderboard.sort(key=lambda x: (x[2], x[3]), reverse=True)  # Example: Sorting by chips and then by scramble score
+                    return filtered_leaderboard
             except sqlite3.Error as e:
                 logging.error(f"Error in get_user_leaderboard: {e}")
-        return []
+            return []
     def get_user_nickname_from_db(self, jid):
         table_name = f"user_chips_{self.table_suffix}"
         try:
