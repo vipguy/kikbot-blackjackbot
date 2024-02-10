@@ -1013,7 +1013,7 @@ class EchoBot(KikClientCallback):
             login_error.solve_captcha_wizard(self.client)
 
 ####BLACKJACK
-    def show_leaderboard(self, group_jid, user_jid): # Needs improvement!
+    def show_leaderboard(self, group_jid, user_jid):
         leaderboard_data = database.get_user_leaderboard(group_jid)
 
         if not leaderboard_data:
@@ -1021,9 +1021,15 @@ class EchoBot(KikClientCallback):
 
         leaderboard_text = "Group Leaderboard:\n"
 
-        for rank, (jid, nickname, chips, hm_score) in enumerate(leaderboard_data, start=1):
-            display_name = nickname if nickname else "'/nickname'"
-            leaderboard_text += f"{rank}. {display_name}: {chips} chips\n"
+        # Counter for valid entries
+        valid_rank = 0
+
+        for (jid, nickname, chips, hm_score) in leaderboard_data:
+            # Check if the nickname is not the default value, not empty, and not None
+            if nickname != '1000000' and nickname != "" and nickname is not None:
+                valid_rank += 1
+                display_name = nickname
+                leaderboard_text += f"{valid_rank}. {display_name}: {chips} chips\n"
 
         # Check if user_jid has a nickname set and include it in the leaderboard text
         user_nickname = database.get_user_nickname(user_jid)
