@@ -463,25 +463,34 @@ class EchoBot(KikClientCallback):
                 self.client.send_chat_message(chat_message.group_jid, "Please specify a word to delete. Format: /deletesave [word]")  
     
     
+    # simple method to use your nicknames and group name of your choice per groupjid ( clearly a betterway to do this )
+    def get_group_name(self, group_jid: str) -> str:
+        # Dictionary mapping group JIDs to group names
+        group_names = {
+            "groupjid here ": "group name here of your choice ",
+            "groupjid here ": "group name here of your choice ",
+            
+            # Add more mappings as needed
+        }
+        return group_names.get(group_jid, "")  # Return the group name or an empty string if not found
+
     
     def on_group_message_received(self, chat_message: chatting.IncomingGroupChatMessage):
         separator = colored("--------------------------------------------------------", "cyan")
         group_message_header = colored("[+ GROUP MESSAGE +]", "cyan")
-        game_log_header = colored("[+ BLACKJACK GAME LOG +]", "green")
-
         print(separator)
         print(group_message_header)
-        print(colored(f"From AJID: {chat_message.from_jid}", "yellow"))
-        print(colored(f"From group: {chat_message.group_jid}", "yellow"))
-        print(colored(f"Says: {chat_message.body}", "yellow"))
+        print(colored(f"From: {database.get_user_nickname_from_db(chat_message.from_jid)}", "yellow"))
+       # Get the group name based on the group JID
+        group_name = self.get_group_name(chat_message.group_jid)
+        group_name_text = colored(f"From group: {group_name}", "yellow") if group_name else colored(f"From group: {chat_message.group_jid}", "yellow")
+        print(group_name_text)
+
+        print(colored(f"Says: {chat_message.body}", "red"))
 
         # Check if the message is related to the Blackjack game
         if chat_message.group_jid in self.game_state:
             print(separator)
-            print(game_log_header)
-            print(colored(f"Game State: {self.game_state[chat_message.group_jid]}", "green"))
-
-        print(separator)
 
         body = chat_message.body.split()
         command = body[0].lower() if body else ""
