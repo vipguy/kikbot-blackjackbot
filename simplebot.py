@@ -13,13 +13,7 @@ from PIL import Image, ImageDraw, ImageFont
 import requests
 import validators
 import youtube_dl
-pip install requirements
-#kik_unofficial==0.12.9
-#Pillow==8.3.2
-#requests==2.26.0
-#termcolor==1.1.0
-#youtube-dl==2022.1.24
-#validators==0.18.2
+
 from database import Database
 from chatbot_db import ChatbotDatabase
 
