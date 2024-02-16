@@ -125,7 +125,7 @@ class EchoBot(KikClientCallback):
             else:
                 self.client.send_chat_message(chat_message.group_jid, "You don't have permission to change captcha settings.")
 
-       def show_settings(self, group_jid):
+    def show_settings(self, group_jid):
         captcha_status = "Enabled" if self.get_captcha_status(group_jid) else "Disabled"
 
         settings_message = (
