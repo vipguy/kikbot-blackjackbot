@@ -16,7 +16,7 @@ import kik_unofficial.datatypes.xmpp.chatting as chatting
 from kik_unofficial.datatypes.xmpp.errors import LoginError
 from kik_unofficial.datatypes.xmpp.roster import FetchRosterResponse
 from helper_funcs import add_admin, is_user_admin, remove_admin
-super =
+super = ""
 logging.basicConfig(
 level=logging.ERROR,
 format="%(asctime)s [%(levelname)s]: %(message)s")
